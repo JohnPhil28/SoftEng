@@ -397,20 +397,20 @@ class Ui_Main_window(object):
         self.tableWidget.setHorizontalHeaderItem(6, item)
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(7, item)
-        self.tableWidget.horizontalHeader().setVisible(False)
-        self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
+        self.tableWidget.horizontalHeader().setVisible(True)
+        self.tableWidget.horizontalHeader().setCascadingSectionResizes(True)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(160)
         self.tableWidget.horizontalHeader().setHighlightSections(True)
         self.tableWidget.horizontalHeader().setMinimumSectionSize(40)
         self.tableWidget.horizontalHeader().setSortIndicatorShown(True)
-        self.tableWidget.horizontalHeader().setStretchLastSection(False)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.verticalHeader().setCascadingSectionResizes(False)
+        self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
         self.tableWidget.verticalHeader().setDefaultSectionSize(40)
         self.tableWidget.verticalHeader().setHighlightSections(True)
         self.tableWidget.verticalHeader().setMinimumSectionSize(40)
         self.tableWidget.verticalHeader().setSortIndicatorShown(False)
-        self.tableWidget.verticalHeader().setStretchLastSection(False)
+        self.tableWidget.verticalHeader().setStretchLastSection(True)
         self.verticalLayout_7.addWidget(self.tableWidget)
         self.verticalLayout_5.addWidget(self.frame_11)
         self.frame_12 = QtWidgets.QFrame(self.frame_view_table)
@@ -1625,7 +1625,6 @@ class Ui_Main_window(object):
         self.label.setText(_translate("Main_window", "None"))
 
 import files_rc
-
 
 if __name__ == "__main__":
     import sys
