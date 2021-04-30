@@ -892,10 +892,10 @@ selection-background-color: rgb(161, 145, 88);
                        <number>8</number>
                       </property>
                       <attribute name="horizontalHeaderVisible">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
                       <attribute name="horizontalHeaderCascadingSectionResizes">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
                       <attribute name="horizontalHeaderMinimumSectionSize">
                        <number>40</number>
@@ -910,13 +910,13 @@ selection-background-color: rgb(161, 145, 88);
                        <bool>true</bool>
                       </attribute>
                       <attribute name="horizontalHeaderStretchLastSection">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
                       <attribute name="verticalHeaderVisible">
                        <bool>false</bool>
                       </attribute>
                       <attribute name="verticalHeaderCascadingSectionResizes">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
                       <attribute name="verticalHeaderMinimumSectionSize">
                        <number>40</number>
@@ -931,7 +931,7 @@ selection-background-color: rgb(161, 145, 88);
                        <bool>false</bool>
                       </attribute>
                       <attribute name="verticalHeaderStretchLastSection">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
                       <row/>
                       <row/>
