@@ -931,7 +931,7 @@ selection-background-color: rgb(161, 145, 88);
                        <bool>false</bool>
                       </attribute>
                       <attribute name="verticalHeaderStretchLastSection">
-                       <bool>true</bool>
+                       <bool>false</bool>
                       </attribute>
                       <row/>
                       <row/>
