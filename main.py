@@ -113,7 +113,11 @@ class Login_window(QMainWindow):
                 mydb = mc.connect(
                     host="localhost",
                     user="root",
+  
+                    password="1234",
+
                     password="",
+     
                     database="student_profiling"
                 )
 
@@ -194,6 +198,9 @@ class Main_window(QMainWindow):
         self.ui.frame_top.mouseMoveEvent = move_window
 
     # Load User Data
+
+   
+
     def load_user_data(self):
         result = s_db.studentsView()
         self.ui.tableWidget.setRowCount(len(result))
@@ -210,6 +217,7 @@ class Main_window(QMainWindow):
             self.ui.tableWidget.setItem(tablerow, 7, QtWidgets.QTableWidgetItem(row[7]))
             tablerow += 1
 
+
     def load_update_data(self):
         if self.ui.student_id_2.text() == "":
             self.ui.notif_3.setText("Enter Student ID")
@@ -218,7 +226,11 @@ class Main_window(QMainWindow):
                 mydb = mc.connect(
                     host="localhost",
                     user="root",
+      
+                    password="1234",
+
                     password="",
+  
                     database="student_profiling"
                 )
 
@@ -242,6 +254,63 @@ class Main_window(QMainWindow):
                 self.ui.notif_3.setText("Error")
 
     # Update Data
+
+    
+
+    # Delete Data
+    def delete_user(self):
+        if self.ui.student_id_delete.text() == "":
+            self.ui.status_2.setPixmap(self.warning_img)
+        else:
+            try:
+                student_id = self.ui.student_id_delete.text()
+                results = s_db.check_if_ID_exists(student_id)
+                if results:
+                    s_db.studentDelete(student_id)
+                    s_db.commitChanges()
+                    self.ui.status_2.setPixmap(self.check_img)
+                    self.ui.student_id_delete.setText("")
+                    self.load_user_data()
+                else:
+                    self.ui.status_2.setPixmap(self.no_user_img)
+            except mc.Error as e:
+                self.ui.status_2.setPixmap(self.error_img)
+
+    # Create User
+    def create_user(self):
+        if self.ui.firstname.text() == "" or self.ui.lastname.text() == "" or self.ui.student_id.text() == "" or \
+                self.ui.course_year.text() == "" or self.ui.address.text() == "" or self.ui.email.text() == "" \
+                or self.ui.mobile_no.text() == "":
+            self.ui.notif.setText("All fields are Required")
+        else:
+            student_id = self.ui.student_id.text()
+            first_name = self.ui.firstname.text()
+            last_name = self.ui.lastname.text()
+            address = self.ui.address.text()
+            birthdate = self.ui.dateEdit.text()
+            course_year = self.ui.course_year.text()
+            email = self.ui.email.text()
+            mobile_no = self.ui.mobile_no.text()
+
+            result = s_db.check_if_ID_exists(student_id)
+            if result:
+                self.ui.notif.setText("Student ID Already Existed")
+
+            elif(result == False and len(student_id) != 10 and student_id.isalnum()):
+                self.ui.notif.setText("Invalid format of ID")
+            else:
+                s_db.studentCreate(student_id, first_name, last_name, address, course_year, birthdate, email, mobile_no)
+                s_db.commitChanges()
+                self.ui.notif.setText("Added Successfully")
+                self.ui.student_id.setText("")
+                self.ui.firstname.setText("")
+                self.ui.lastname.setText("")
+                self.ui.address.setText("")
+                self.ui.course_year.setText("")
+                self.ui.email.setText("")
+                self.ui.mobile_no.setText("")
+                self.load_user_data()
+
     def update_user_data(self):
         if self.ui.student_id_2.text() == "":
             self.ui.notif_2.setText("Enter Student ID")
@@ -289,6 +358,7 @@ class Main_window(QMainWindow):
 
     # Create User
     
+
 
     # Go Back to Login Window Function
     def go_to_login_window(self):
