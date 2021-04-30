@@ -410,7 +410,7 @@ class Ui_Main_window(object):
         self.tableWidget.verticalHeader().setHighlightSections(True)
         self.tableWidget.verticalHeader().setMinimumSectionSize(40)
         self.tableWidget.verticalHeader().setSortIndicatorShown(False)
-        self.tableWidget.verticalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setStretchLastSection(False)
         self.verticalLayout_7.addWidget(self.tableWidget)
         self.verticalLayout_5.addWidget(self.frame_11)
         self.frame_12 = QtWidgets.QFrame(self.frame_view_table)
