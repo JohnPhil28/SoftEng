@@ -320,12 +320,12 @@ class Main_window(QMainWindow):
             mobile_no = self.ui.mobile_no.text()
 
             result = s_db.check_if_ID_exists(student_id)
-            s_db.studentCreate(student_id, first_name, last_name, address, course_year, birthdate, email, mobile_no)
-            result = s_db.check_if_ID_exists(student_id)
-            if result is not None:
+            if result:
                 self.ui.notif.setText("Student ID Already Existed")
 
             else:
+                s_db.studentCreate(student_id, first_name, last_name, address, course_year, birthdate, email, mobile_no)
+                s_db.commitChanges()
                 self.ui.notif.setText("Added Successfully")
                 self.ui.student_id.setText("")
                 self.ui.firstname.setText("")
