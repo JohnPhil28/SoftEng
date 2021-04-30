@@ -113,7 +113,11 @@ class Login_window(QMainWindow):
                 mydb = mc.connect(
                     host="localhost",
                     user="root",
+  
                     password="1234",
+
+                    password="",
+     
                     database="student_profiling"
                 )
 
@@ -194,7 +198,25 @@ class Main_window(QMainWindow):
         self.ui.frame_top.mouseMoveEvent = move_window
 
     # Load User Data
+
    
+
+    def load_user_data(self):
+        result = s_db.studentsView()
+        self.ui.tableWidget.setRowCount(len(result))
+        tablerow = 0
+
+        for row in result:
+            self.ui.tableWidget.setItem(tablerow, 0, QtWidgets.QTableWidgetItem(str(row[0])))
+            self.ui.tableWidget.setItem(tablerow, 1, QtWidgets.QTableWidgetItem(row[1]))
+            self.ui.tableWidget.setItem(tablerow, 2, QtWidgets.QTableWidgetItem(row[2]))
+            self.ui.tableWidget.setItem(tablerow, 3, QtWidgets.QTableWidgetItem(row[3]))
+            self.ui.tableWidget.setItem(tablerow, 5, QtWidgets.QTableWidgetItem(row[4]))
+            self.ui.tableWidget.setItem(tablerow, 4, QtWidgets.QTableWidgetItem(row[5].strftime('%Y-%m-%d')))
+            self.ui.tableWidget.setItem(tablerow, 6, QtWidgets.QTableWidgetItem(row[6]))
+            self.ui.tableWidget.setItem(tablerow, 7, QtWidgets.QTableWidgetItem(row[7]))
+            tablerow += 1
+
 
     def load_update_data(self):
         if self.ui.student_id_2.text() == "":
@@ -204,7 +226,11 @@ class Main_window(QMainWindow):
                 mydb = mc.connect(
                     host="localhost",
                     user="root",
+      
                     password="1234",
+
+                    password="",
+  
                     database="student_profiling"
                 )
 
@@ -228,6 +254,7 @@ class Main_window(QMainWindow):
                 self.ui.notif_3.setText("Error")
 
     # Update Data
+
     
 
     # Delete Data
@@ -283,6 +310,55 @@ class Main_window(QMainWindow):
                 self.ui.email.setText("")
                 self.ui.mobile_no.setText("")
                 self.load_user_data()
+
+    def update_user_data(self):
+        if self.ui.student_id_2.text() == "":
+            self.ui.notif_2.setText("Enter Student ID")
+
+        else:
+            try:
+                studentid = self.ui.student_id_2.text()
+                fname = self.ui.firstname_2.text()
+                lname = self.ui.lastname_2.text()
+                add = self.ui.address_2.text()
+                courseyear = self.ui.course_year_2.text()
+                birthdate = self.ui.dateEdit_2.text()
+                email = self.ui.email_2.text()
+                mobileno = self.ui.mobile_no_2.text()
+
+    
+                result = s_db.check_if_ID_exists(studentid)
+
+                if result is False:
+                    self.ui.notif_2.setText("Invalid Student ID")
+
+                elif studentid == "" or fname == "" or lname =="" or add == "" or courseyear == "" or email == "" or mobileno == "":
+                    self.ui.notif_2.setText("Click Load")
+
+                else:
+                    s_db.studentUpdate(studentid, fname, lname, add, courseyear, birthdate, email, mobileno)
+                    s_db.commitChanges()
+
+                    self.ui.notif_2.setText("Successfully Updated")
+                    self.ui.student_id_2.setText("")
+                    self.ui.firstname_2.setText("")
+                    self.ui.lastname_2.setText("")
+                    self.ui.address_2.setText("")
+                    self.ui.course_year_2.setText("")
+                    self.ui.dateEdit_2.setDate(QtCore.QDate(2021, 1, 1))
+                    self.ui.email_2.setText("")
+                    self.ui.mobile_no_2.setText("")
+                    self.load_user_data()
+
+            except mc.Error as e:
+                self.ui.notif_2.setText("Error")
+
+    # Delete Data
+
+
+    # Create User
+    
+
 
     # Go Back to Login Window Function
     def go_to_login_window(self):
