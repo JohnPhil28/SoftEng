@@ -15,6 +15,8 @@ from login_screen import Ui_Login_window
 # Import main screen UI
 from main_screen import Ui_Main_window
 
+#database_fucntionalites 
+import dbMySQL as s_db
 # Globals
 GLOBAL_STATE = 0
 counter = 0
@@ -135,7 +137,6 @@ class Login_window(QMainWindow):
         self.main.show()
         self.close()
 
-
 # Main window
 class Main_window(QMainWindow):
     def __init__(self):
@@ -161,18 +162,12 @@ class Main_window(QMainWindow):
         self.ui.btn_view_page.clicked.connect(lambda: self.ui.pages_widgets.setCurrentWidget(self.ui.page_view_users))
         # Add User Page
         self.ui.btn_add_page.clicked.connect(lambda: self.ui.pages_widgets.setCurrentWidget(self.ui.page_add_user))
-        # Update User Page
-        self.ui.btn_update_page.clicked.connect(
-            lambda: self.ui.pages_widgets.setCurrentWidget(self.ui.page_update_user))
 
         # Go Back to Login
         self.ui.btn_logout.clicked.connect(self.go_to_login_window)
 
         # Load Table
         self.load_user_data()
-
-        # Load Data in Update Screen
-        self.ui.btn_load.clicked.connect(self.load_update_data)
 
         # Update Table
         self.ui.btn_update.clicked.connect(self.update_user_data)
@@ -200,18 +195,7 @@ class Main_window(QMainWindow):
 
     # Load User Data
     def load_user_data(self):
-        mydb = mc.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="student_profiling"
-        )
-
-        mycursor = mydb.cursor()
-        load_data = "SELECT * FROM student_table"
-        mycursor.execute(load_data)
-        result = mycursor.fetchall()
-
+        result = s_db.studentsView()
         self.ui.tableWidget.setRowCount(len(result))
         tablerow = 0
 
@@ -224,10 +208,8 @@ class Main_window(QMainWindow):
             self.ui.tableWidget.setItem(tablerow, 4, QtWidgets.QTableWidgetItem(row[5].strftime('%Y-%m-%d')))
             self.ui.tableWidget.setItem(tablerow, 6, QtWidgets.QTableWidgetItem(row[6]))
             self.ui.tableWidget.setItem(tablerow, 7, QtWidgets.QTableWidgetItem(row[7]))
-
             tablerow += 1
 
-    # Load to Update Page
     def load_update_data(self):
         if self.ui.student_id_2.text() == "":
             self.ui.notif_3.setText("Enter Student ID")
@@ -266,13 +248,6 @@ class Main_window(QMainWindow):
 
         else:
             try:
-                mydb = mc.connect(
-                    host="localhost",
-                    user="root",
-                    password="",
-                    database="student_profiling"
-                )
-
                 studentid = self.ui.student_id_2.text()
                 fname = self.ui.firstname_2.text()
                 lname = self.ui.lastname_2.text()
@@ -282,22 +257,18 @@ class Main_window(QMainWindow):
                 email = self.ui.email_2.text()
                 mobileno = self.ui.mobile_no_2.text()
 
-                mycursor1 = mydb.cursor()
-                check_student_id = "SELECT * FROM student_table WHERE student_id = '" + studentid + "'"
-                mycursor1.execute(check_student_id)
-                result = mycursor1.fetchone()
+    
+                result = s_db.check_if_ID_exists(studentid)
 
-                if result is None:
+                if result is False:
                     self.ui.notif_2.setText("Invalid Student ID")
 
                 elif studentid == "" or fname == "" or lname =="" or add == "" or courseyear == "" or email == "" or mobileno == "":
                     self.ui.notif_2.setText("Click Load")
 
                 else:
-                    mycursor = mydb.cursor()
-                    query2 = "UPDATE student_table SET  fname = '" + fname + "', lname = '" + lname + "', student_address = '" + add + "', course_year = '" + courseyear + "', birth_date = '" + birthdate + "', email = '" + email + "', mobile_no = '" + mobileno + "' WHERE student_id = '" + studentid + "'"
-                    mycursor.execute(query2)
-                    mydb.commit()
+                    s_db.studentUpdate(studentid, fname, lname, add, courseyear, birthdate, email, mobileno)
+                    s_db.commitChanges()
 
                     self.ui.notif_2.setText("Successfully Updated")
                     self.ui.student_id_2.setText("")
@@ -319,30 +290,16 @@ class Main_window(QMainWindow):
             self.ui.status_2.setPixmap(self.warning_img)
         else:
             try:
-                mydb = mc.connect(
-                    host="localhost",
-                    user="root",
-                    password="",
-                    database="student_profiling"
-                )
                 student_id = self.ui.student_id_delete.text()
-
-                mycursor = mydb.cursor()
-                check_student_id = "SELECT * FROM student_table WHERE student_id = '" + student_id + "'"
-                mycursor.execute(check_student_id)
-                result = mycursor.fetchone()
-
-                if result is None:
-                    self.ui.status_2.setPixmap(self.no_user_img)
-
-                else:
-                    query = "DELETE FROM student_table WHERE student_id = '" + student_id + "'"
-                    mycursor.execute(query)
-                    mydb.commit()
+                results = s_db.check_if_ID_exists(student_id)
+                if results:
+                    s_db.studentDelete(student_id)
+                    s_db.commitChanges()
                     self.ui.status_2.setPixmap(self.check_img)
                     self.ui.student_id_delete.setText("")
                     self.load_user_data()
-
+                else:
+                    self.ui.status_2.setPixmap(self.no_user_img)
             except mc.Error as e:
                 self.ui.status_2.setPixmap(self.error_img)
 
@@ -353,13 +310,6 @@ class Main_window(QMainWindow):
                 or self.ui.mobile_no.text() == "":
             self.ui.notif.setText("All fields are Required")
         else:
-            mydb = mc.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="student_profiling"
-            )
-
             student_id = self.ui.student_id.text()
             first_name = self.ui.firstname.text()
             last_name = self.ui.lastname.text()
@@ -369,32 +319,21 @@ class Main_window(QMainWindow):
             email = self.ui.email.text()
             mobile_no = self.ui.mobile_no.text()
 
-            mycursor = mydb.cursor()
-
-            check_student_id = "SELECT * FROM student_table WHERE student_id = '" + student_id + "'"
-            mycursor.execute(check_student_id)
-            result = mycursor.fetchone()
-
+            result = s_db.check_if_ID_exists(student_id)
+            s_db.studentCreate(student_id, first_name, last_name, address, course_year, birthdate, email, mobile_no)
+            result = s_db.check_if_ID_exists(student_id)
             if result is not None:
                 self.ui.notif.setText("Student ID Already Existed")
 
             else:
-                query = "INSERT INTO student_table (student_id, fname, lname, student_address, course_year, \
-                birth_date, email, mobile_no)" \
-                        " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-                value = (student_id, first_name, last_name, address, course_year, birthdate, email, mobile_no)
-                mycursor.execute(query, value)
-                mydb.commit()
                 self.ui.notif.setText("Added Successfully")
                 self.ui.student_id.setText("")
                 self.ui.firstname.setText("")
                 self.ui.lastname.setText("")
                 self.ui.address.setText("")
                 self.ui.course_year.setText("")
-                self.ui.dateEdit.setDate(QtCore.QDate(2021, 1, 1))
                 self.ui.email.setText("")
                 self.ui.mobile_no.setText("")
-                self.ui.notif.setText("")
                 self.load_user_data()
 
     # Go Back to Login Window Function
