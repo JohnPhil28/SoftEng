@@ -323,6 +323,8 @@ class Main_window(QMainWindow):
             if result:
                 self.ui.notif.setText("Student ID Already Existed")
 
+            elif(result == False and len(student_id) != 10 and student_id.isalnum()):
+                self.ui.notif.setText("Invalid format of ID")
             else:
                 s_db.studentCreate(student_id, first_name, last_name, address, course_year, birthdate, email, mobile_no)
                 s_db.commitChanges()
